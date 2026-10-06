@@ -1,0 +1,49 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab3"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detail Transaksi</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" *ngIf="transaction">
+
+  <!-- Ringkasan Transaksi -->
+  <ion-card class="ion-no-margin ion-margin-bottom">
+    <ion-card-header>
+      <ion-card-subtitle>{{ transaction.date | date:'dd MMMM yyyy, HH:mm' }}</ion-card-subtitle>
+      <ion-card-title>{{ transaction.id }}</ion-card-title>
+    </ion-card-header>
+  </ion-card>
+
+  <!-- Rincian Item Belanja -->
+  <ion-list lines="full">
+    <ion-list-header>
+      <ion-label>Rincian Pembelian</ion-label>
+    </ion-list-header>
+
+    <ion-item *ngFor="let item of transaction.items">
+      <ion-label>
+        <h2><strong>{{ item.productName }}</strong></h2>
+        <p>{{ item.quantity }} x Rp {{ item.price | number:'1.0-0' }}</p>
+      </ion-label>
+      <ion-note slot="end" color="dark">
+        <strong>Rp {{ (item.quantity * item.price) | number:'1.0-0' }}</strong>
+      </ion-note>
+    </ion-item>
+  </ion-list>
+
+  <!-- Total Pembayaran -->
+  <ion-card class="ion-no-margin ion-margin-top" color="light">
+    <ion-card-content class="ion-flex ion-justify-content-between ion-align-items-center">
+      <h2><strong>Total Bayar</strong></h2>
+      <h2 color="success"><strong>Rp {{ transaction.total | number:'1.0-0' }}</strong></h2>
+    </ion-card-content>
+  </ion-card>
+
+</ion-content>
+
+<ion-content class="ion-padding ion-text-center" *ngIf="!transaction">
+  <p>Transaksi tidak ditemukan!</p>
+</ion-content>

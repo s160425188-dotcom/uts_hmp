@@ -1,0 +1,62 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Katalog Produk</ion-title>
+    <ion-buttons slot="end">
+      <ion-button routerLink="/keranjang">
+        <ion-icon slot="icon-only" name="cart-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+
+  </ion-toolbar>
+
+  <ion-toolbar color="primary">
+    <ion-searchbar [(ngModel)]="searchQuery" placeholder="Cari nama produk atau kategori..." animated="true">
+    </ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <!-- List Produk dengan Animasi Sliding/Swipe-to-Delete -->
+  <ion-list *ngIf="filteredProducts.length > 0">
+    <ion-item-sliding *ngFor="let product of filteredProducts" #slidingItem>
+
+      <!-- Konten Utama Item Produk -->
+      <ion-item button (click)="goToDetail(product.id)" detail="true">
+        <ion-icon slot="start" name="cube-outline" color="primary"></ion-icon>
+        <ion-label>
+          <h2><strong>{{ product.name }}</strong></h2>
+          <p>Kategori: {{ product.category }} | Stok: {{ product.stock }} Pcs</p>
+        </ion-label>
+        <ion-note slot="end" color="success">
+          <strong>Rp {{ product.sellPrice | number:'1.0-0' }}</strong>
+        </ion-note>
+      </ion-item>
+
+      <!-- Opsi Aksi Geser (Swipe to Delete) -->
+      <ion-item-options side="end">
+        <ion-item-option color="danger" (click)="deleteProduct(product.id, slidingItem)">
+          <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+
+    </ion-item-sliding>
+  </ion-list>
+
+  <!-- Tampilan jika produk tidak ditemukan -->
+  <div *ngIf="filteredProducts.length === 0" class="ion-text-center ion-padding">
+    <ion-icon name="search-outline" style="font-size: 48px; color: #888;"></ion-icon>
+    <p>Produk "<strong>{{ searchQuery }}</strong>" tidak ditemukan.</p>
+  </div>
+
+  <!-- Floating Action Button untuk Tambah Produk -->
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button routerLink="/form-produk" color="primary">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+</ion-content>

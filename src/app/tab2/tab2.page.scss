@@ -1,0 +1,12 @@
+ion-item-sliding {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  
+  &.item-deleted {
+    transform: translateX(-100%);
+    opacity: 0;
+    max-height: 0;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+}

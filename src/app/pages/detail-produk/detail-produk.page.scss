@@ -1,0 +1,39 @@
+/* Animasi Pop-In saat elemen dimuat atau diklik */
+@keyframes popIn {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Animasi Pulse pada Tombol Tambah ke Keranjang */
+@keyframes pulseBtn {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.product-card {
+  animation: popIn 0.4s ease-out forwards;
+}
+
+.btn-add-cart {
+  transition: transform 0.2s ease-in-out;
+  
+  &:active {
+    animation: pulseBtn 0.2s ease-in-out;
+  }
+}

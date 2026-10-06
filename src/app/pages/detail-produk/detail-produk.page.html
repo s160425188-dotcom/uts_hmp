@@ -1,0 +1,75 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab2"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detail Produk</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" *ngIf="product">
+  <!-- Tambahkan class product-card di sini -->
+  <ion-card class="ion-no-margin product-card">
+    
+    <!-- 1. Property Binding untuk Gambar Produk & Gambar Default ([src]) -->
+    <div class="ion-text-center ion-padding-top">
+      <img 
+        [src]="product.image ? product.image : defaultImage" 
+        [alt]="product.name"
+        style="max-height: 150px; object-fit: contain;" />
+    </div>
+
+    <ion-card-header>
+      <ion-card-subtitle>{{ product.category }}</ion-card-subtitle>
+      <ion-card-title>{{ product.name }}</ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <ion-list lines="full">
+        <ion-item>
+          <ion-icon slot="start" name="barcode-outline"></ion-icon>
+          <ion-label>ID Produk</ion-label>
+          <ion-note slot="end">#{{ product.id }}</ion-note>
+        </ion-item>
+
+        <ion-item>
+          <ion-icon slot="start" name="archive-outline"></ion-icon>
+          <ion-label>Stok Tersedia</ion-label>
+          <ion-note slot="end" [color]="product.stock > 0 ? 'primary' : 'danger'">
+            <strong>{{ product.stock }} Pcs</strong>
+          </ion-note>
+        </ion-item>
+
+        <ion-item>
+          <ion-icon slot="start" name="cash-outline"></ion-icon>
+          <ion-label>Harga Beli (Modal)</ion-label>
+          <ion-note slot="end" color="medium">Rp {{ product.buyPrice | number:'1.0-0' }}</ion-note>
+        </ion-item>
+
+        <ion-item>
+          <ion-icon slot="start" name="pricetag-outline"></ion-icon>
+          <ion-label>Harga Jual</ion-label>
+          <ion-note slot="end" color="success">
+            <strong>Rp {{ product.sellPrice | number:'1.0-0' }}</strong>
+          </ion-note>
+        </ion-item>
+      </ion-list>
+
+      <!-- 2. Property Binding [disabled], Event Binding (click), dan Class Animasi btn-add-cart -->
+      <ion-button 
+        expand="block" 
+        color="primary" 
+        class="ion-margin-top btn-add-cart"
+        [disabled]="product.stock === 0" 
+        (click)="addToCart()">
+        <ion-icon slot="start" name="cart-outline"></ion-icon>
+        {{ product.stock > 0 ? 'Tambah ke Keranjang' : 'Stok Habis' }}
+      </ion-button>
+
+    </ion-card-content>
+  </ion-card>
+</ion-content>
+
+<ion-content class="ion-padding ion-text-center" *ngIf="!product">
+  <p>Produk tidak ditemukan!</p>
+</ion-content>

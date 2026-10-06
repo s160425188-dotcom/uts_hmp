@@ -1,0 +1,90 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab2"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ isEditMode ? 'Edit Produk' : 'Tambah Produk Baru' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+    <ion-list lines="full">
+
+      <!-- Field Nama Produk -->
+      <ion-item>
+        <ion-label position="stacked">Nama Produk <ion-text color="danger">*</ion-text></ion-label>
+        <ion-input formControlName="name" placeholder="Contoh: Beras Pandan Wangi 5kg"></ion-input>
+      </ion-item>
+      <div class="error-container" *ngIf="f['name'].touched && f['name'].invalid">
+        <ion-text color="danger" class="ion-padding-start" *ngIf="f['name'].errors?.['required']">
+          <small>Nama produk wajib diisi!</small>
+        </ion-text>
+        <ion-text color="danger" class="ion-padding-start" *ngIf="f['name'].errors?.['minlength']">
+          <small>Nama produk minimal 3 karakter.</small>
+        </ion-text>
+      </div>
+
+      <!-- Field Kategori -->
+      <ion-item>
+        <ion-label position="stacked">Kategori <ion-text color="danger">*</ion-text></ion-label>
+        <ion-select formControlName="category" interface="popover">
+          <ion-select-option value="Sembako">Sembako</ion-select-option>
+          <ion-select-option value="Minyak">Minyak</ion-select-option>
+          <ion-select-option value="Bumbu">Bumbu</ion-select-option>
+          <ion-select-option value="Makanan">Makanan</ion-select-option>
+          <ion-select-option value="Minuman">Minuman</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Field Harga Beli (Modal) -->
+      <ion-item>
+        <ion-label position="stacked">Harga Beli / Modal (Rp) <ion-text color="danger">*</ion-text></ion-label>
+        <ion-input type="number" formControlName="buyPrice" placeholder="0"></ion-input>
+      </ion-item>
+      <div class="error-container" *ngIf="f['buyPrice'].touched && f['buyPrice'].invalid">
+        <ion-text color="danger" class="ion-padding-start" *ngIf="f['buyPrice'].errors?.['required']">
+          <small>Harga beli wajib diisi!</small>
+        </ion-text>
+        <ion-text color="danger" class="ion-padding-start" *ngIf="f['buyPrice'].errors?.['min']">
+          <small>Harga beli harus lebih dari 0.</small>
+        </ion-text>
+      </div>
+
+      <!-- Field Harga Jual -->
+      <ion-item>
+        <ion-label position="stacked">Harga Jual (Rp) <ion-text color="danger">*</ion-text></ion-label>
+        <ion-input type="number" formControlName="sellPrice" placeholder="0"></ion-input>
+      </ion-item>
+      <div class="error-container" *ngIf="f['sellPrice'].touched && f['sellPrice'].invalid">
+        <ion-text color="danger" class="ion-padding-start" *ngIf="f['sellPrice'].errors?.['required']">
+          <small>Harga jual wajib diisi!</small>
+        </ion-text>
+        <ion-text color="danger" class="ion-padding-start" *ngIf="f['sellPrice'].errors?.['min']">
+          <small>Harga jual harus lebih dari 0.</small>
+        </ion-text>
+      </div>
+
+      <!-- Field Stok -->
+      <ion-item>
+        <ion-label position="stacked">Jumlah Stok <ion-text color="danger">*</ion-text></ion-label>
+        <ion-input type="number" formControlName="stock" placeholder="0"></ion-input>
+      </ion-item>
+      <div class="error-container" *ngIf="f['stock'].touched && f['stock'].invalid">
+        <ion-text color="danger" class="ion-padding-start" *ngIf="f['stock'].errors?.['required']">
+          <small>Stok wajib diisi!</small>
+        </ion-text>
+        <ion-text color="danger" class="ion-padding-start" *ngIf="f['stock'].errors?.['min']">
+          <small>Stok tidak boleh bernilai negatif (minimal 0).</small>
+        </ion-text>
+      </div>
+
+    </ion-list>
+
+    <!-- Tombol Simpan -->
+    <ion-button expand="block" type="submit" color="primary" class="ion-margin-top">
+      <ion-icon slot="start" name="save-outline"></ion-icon>
+      {{ isEditMode ? 'Update Produk' : 'Simpan Produk' }}
+    </ion-button>
+  </form>
+</ion-content>

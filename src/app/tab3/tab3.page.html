@@ -1,0 +1,30 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Riwayat Transaksi</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <ion-list *ngIf="transactions.length > 0">
+    <ion-item *ngFor="let trx of transactions" button detail="true" (click)="goToDetail(trx.id)">
+      <ion-icon slot="start" name="receipt-outline" color="primary"></ion-icon>
+      <ion-label>
+        <h2><strong>{{ trx.id }}</strong></h2>
+        <p>{{ trx.date | date:'dd MMM yyyy, HH:mm' }} | {{ trx.itemCount }} Item</p>
+      </ion-label>
+      <ion-note slot="end" color="success">
+        <strong>Rp {{ trx.total | number:'1.0-0' }}</strong>
+      </ion-note>
+    </ion-item>
+  </ion-list>
+
+  <div *ngIf="transactions.length === 0" class="ion-text-center ion-padding">
+    <ion-icon name="document-text-outline" style="font-size: 64px; color: #aaa;"></ion-icon>
+    <p>Belum ada riwayat transaksi.</p>
+  </div>
+
+</ion-content>

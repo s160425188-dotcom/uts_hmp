@@ -1,0 +1,42 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Dashboard</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <h2>Ringkasan Toko Bu Marni</h2>
+
+  <ion-card color="success">
+    <ion-card-header>
+      <ion-card-subtitle>Katalog Toko</ion-card-subtitle>
+      <ion-card-title>Total Jenis Produk</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <h1><strong>{{ totalProduk }} Item</strong></h1>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card color="warning">
+    <ion-card-header>
+      <ion-card-subtitle>Penjualan Hari Ini</ion-card-subtitle>
+      <ion-card-title>Total Transaksi</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <h1><strong>Rp {{ totalTransaksiHariIni }}</strong></h1>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card color="tertiary">
+    <ion-card-header>
+      <ion-card-subtitle>Favorit Pelanggan</ion-card-subtitle>
+      <ion-card-title>Produk Terlaris</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <h2><strong>{{ produkTerlaris }}</strong></h2>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

@@ -1,0 +1,56 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab2"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Keranjang Belanja</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <!-- Daftar Item dalam Keranjang -->
+  <ion-list *ngIf="cartItems.length > 0" lines="full">
+    <ion-item *ngFor="let item of cartItems">
+      <ion-label>
+        <h2><strong>{{ item.product.name }}</strong></h2>
+        <p>Harga: Rp {{ item.product.sellPrice | number:'1.0-0' }}</p>
+        <ion-text color="primary">
+          <strong>Subtotal: Rp {{ (item.product.sellPrice * item.quantity) | number:'1.0-0' }}</strong>
+        </ion-text>
+      </ion-label>
+
+      <!-- Kontrol Jumlah Item (+ / -) -->
+      <div slot="end" class="ion-flex ion-align-items-center">
+        <ion-button fill="clear" color="medium" (click)="decreaseQty(item.product.id)">
+          <ion-icon name="remove-circle-outline"></ion-icon>
+        </ion-button>
+        <ion-text class="ion-padding-horizontal"><strong>{{ item.quantity }}</strong></ion-text>
+        <ion-button fill="clear" color="primary" (click)="increaseQty(item.product.id)">
+          <ion-icon name="add-circle-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </ion-item>
+  </ion-list>
+
+  <!-- Keranjang Kosong -->
+  <div *ngIf="cartItems.length === 0" class="ion-text-center ion-padding">
+    <ion-icon name="cart-outline" style="font-size: 64px; color: #aaa;"></ion-icon>
+    <p>Keranjang belanja kamu masih kosong.</p>
+  </div>
+
+</ion-content>
+
+<!-- Footer Sticky untuk Total & Tombol Konfirmasi -->
+<ion-footer *ngIf="cartItems.length > 0">
+  <ion-toolbar class="ion-padding-horizontal">
+    <ion-label slot="start">
+      <p>Total Belanja:</p>
+      <h2 color="success"><strong>Rp {{ totalBelanja | number:'1.0-0' }}</strong></h2>
+    </ion-label>
+    <ion-button slot="end" color="success" size="medium" (click)="checkout()">
+      <ion-icon slot="start" name="checkmark-done-outline"></ion-icon>
+      Konfirmasi Transaksi
+    </ion-button>
+  </ion-toolbar>
+</ion-footer>
