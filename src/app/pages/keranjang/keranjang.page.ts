@@ -12,6 +12,7 @@ import { TransactionService } from '../../services/transaction';
 export class KeranjangPage implements OnInit {
 
   cartItems: CartItem[] = [];
+  isProcessing: boolean = false;
 
   constructor(
     private cartService: CartService,
@@ -38,7 +39,9 @@ export class KeranjangPage implements OnInit {
   }
 
   async checkout() {
-    if (this.cartItems.length === 0) return;
+    if (this.isProcessing || this.cartItems.length === 0 || this.totalBelanja <= 0) {
+      return;
+    }
 
     const alert = await this.alertCtrl.create({
       header: 'Konfirmasi Transaksi',
@@ -72,6 +75,7 @@ export class KeranjangPage implements OnInit {
             });
             await toast.present();
 
+            this.isProcessing = false;
             this.navCtrl.navigateRoot('/tabs/tab3'); // Pindah ke halaman Riwayat Transaksi (Tab 3)
           }
         }

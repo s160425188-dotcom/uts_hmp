@@ -48,9 +48,9 @@
       <p>Total Belanja:</p>
       <h2 color="success"><strong>Rp {{ totalBelanja | number:'1.0-0' }}</strong></h2>
     </ion-label>
-    <ion-button slot="end" color="success" size="medium" (click)="checkout()">
-      <ion-icon slot="start" name="checkmark-done-outline"></ion-icon>
-      Konfirmasi Transaksi
-    </ion-button>
+    <ion-button slot="end" color="success" size="medium" [disabled]="isProcessing" (click)="checkout()">
+  <ion-icon slot="start" name="checkmark-done-outline"></ion-icon>
+  {{ isProcessing ? 'Memproses...' : 'Konfirmasi Transaksi' }}
+</ion-button>
   </ion-toolbar>
 </ion-footer>
