@@ -12,7 +12,7 @@ export class Tab1Page implements OnInit {
 
   totalProduk: number = 0;
   totalTransaksiHariIni: number = 0;
-  produkTerlaris: string = '';
+  produkTerlaris: string = '-';
 
   constructor(
     private productService: ProductService,
@@ -20,9 +20,18 @@ export class Tab1Page implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.loadDashboardData();
+  }
+
+  // Dipanggil otomatis SETIAP KALI halaman Tab 1 dibuka/fokus
+  ionViewWillEnter() {
+    this.loadDashboardData();
+  }
+
+  loadDashboardData() {
     this.totalProduk = this.productService.getTotalProductTypes();
     this.totalTransaksiHariIni = this.transactionService.getTodayTotalSales();
-    this.produkTerlaris = this.productService.getTopProduct();
+    this.produkTerlaris = this.transactionService.getTopSellingProduct();
   }
 
 }

@@ -23,6 +23,14 @@ export class KeranjangPage implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.refreshCart();
+  }
+
+  ionViewWillEnter() {
+    this.refreshCart();
+  }
+
+  refreshCart() {
     this.cartItems = this.cartService.getCart();
   }
 
@@ -32,13 +40,16 @@ export class KeranjangPage implements OnInit {
 
   increaseQty(productId: number) {
     this.cartService.increaseQuantity(productId);
+    this.refreshCart();
   }
 
   decreaseQty(productId: number) {
     this.cartService.decreaseQuantity(productId);
+    this.refreshCart();
   }
 
   async checkout() {
+    // Cegah eksekusi jika sedang diproses atau keranjang kosong
     if (this.isProcessing || this.cartItems.length === 0 || this.totalBelanja <= 0) {
       return;
     }
@@ -54,29 +65,45 @@ export class KeranjangPage implements OnInit {
         {
           text: 'Konfirmasi',
           handler: async () => {
-            // Mapping item keranjang ke format rincian transaksi
-            const items = this.cartItems.map(c => ({
-              productName: c.product.name,
-              price: c.product.sellPrice,
-              quantity: c.quantity
-            }));
+            // Proteksi double-click pada tombol konfirmasi
+            if (this.isProcessing) {
+              return false;
+            }
+            this.isProcessing = true;
 
-            // Simpan transaksi beserta rincian itemnya
-            this.transactionService.addTransactionWithItems(this.totalBelanja, items);
+            try {
+              // 1. Salin data item keranjang
+              const items = this.cartItems.map(c => ({
+                productName: c.product.name,
+                price: c.product.sellPrice,
+                quantity: c.quantity
+              }));
 
-            // Kosongkan Keranjang
-            this.cartService.clearCart();
+              // 2. Simpan transaksi ke TransactionService
+              this.transactionService.addTransactionWithItems(this.totalBelanja, items);
 
-            const toast = await this.toastCtrl.create({
-              message: 'Transaksi berhasil disimpan ke riwayat!',
-              duration: 2000,
-              color: 'success',
-              position: 'bottom'
-            });
-            await toast.present();
+              // 3. Kosongkan keranjang belanja
+              this.cartService.clearCart();
+              this.refreshCart();
 
-            this.isProcessing = false;
-            this.navCtrl.navigateRoot('/tabs/tab3'); // Pindah ke halaman Riwayat Transaksi (Tab 3)
+              // 4. Tampilkan pemberitahuan Toast
+              const toast = await this.toastCtrl.create({
+                message: 'Transaksi berhasil disimpan ke riwayat!',
+                duration: 2000,
+                color: 'success',
+                position: 'bottom'
+              });
+              await toast.present();
+
+              // 5. Navigasi ke Riwayat Transaksi (Tab 3)
+              await this.navCtrl.navigateRoot('/tabs/tab3');
+            } catch (error) {
+              console.error('Gagal memproses transaksi:', error);
+            } finally {
+              this.isProcessing = false;
+            }
+
+            return true;
           }
         }
       ]
