@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NavController, ToastController } from '@ionic/angular';
+import { ProductService } from '../../services/product';
 
 @Component({
   selector: 'app-form-produk',
@@ -15,22 +16,17 @@ export class FormProdukPage implements OnInit {
   isEditMode: boolean = false;
   productId?: number;
 
-  mockProducts = [
-    { id: 1, name: 'Beras Pandan Wangi 5kg', category: 'Sembako', buyPrice: 58000, sellPrice: 65000, stock: 20 },
-    { id: 2, name: 'Minyak Goreng Bimoli 1L', category: 'Minyak', buyPrice: 13000, sellPrice: 15000, stock: 15 }
-  ];
-
   constructor(
     private formBuilder: FormBuilder,
     private activatedRoute: ActivatedRoute,
     private navCtrl: NavController,
-    private toastController: ToastController
+    private toastController: ToastController,
+    private productService: ProductService // 1. Inject ProductService
   ) { }
 
   ngOnInit() {
     this.initForm();
     
-    // Perbaikan: gunakan this.activatedRoute
     const idParam = this.activatedRoute.snapshot.paramMap.get('id');
     if (idParam) {
       this.isEditMode = true;
@@ -40,7 +36,6 @@ export class FormProdukPage implements OnInit {
   }
 
   initForm() {
-    // Perbaikan: gunakan this.formBuilder
     this.productForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.minLength(3)]],
       category: ['Sembako', [Validators.required]],
@@ -51,7 +46,8 @@ export class FormProdukPage implements OnInit {
   }
 
   loadProductData(id: number) {
-    const existingProduct = this.mockProducts.find(p => p.id === id);
+    // 2. Ambil data asli dari ProductService, bukan dari mockProducts
+    const existingProduct = this.productService.getProductById(id);
     if (existingProduct) {
       this.productForm.patchValue({
         name: existingProduct.name,
@@ -74,16 +70,28 @@ export class FormProdukPage implements OnInit {
     }
 
     const formData = this.productForm.value;
+
+    // 3. Eksekusi simpan ke ProductService (Tambah Baru atau Update)
+    if (this.isEditMode && this.productId) {
+      this.productService.updateProduct({
+        id: this.productId,
+        ...formData
+      });
+    } else {
+      this.productService.addProduct(formData);
+    }
+
     const actionText = this.isEditMode ? 'diperbarui' : 'ditambahkan';
 
-    // Perbaikan: gunakan this.toastController
     const toast = await this.toastController.create({
       message: `Produk "${formData.name}" berhasil ${actionText}!`,
       duration: 2000,
-      color: 'success'
+      color: 'success',
+      position: 'bottom'
     });
     await toast.present();
 
+    // 4. Kembali ke daftar produk
     this.navCtrl.back();
   }
 

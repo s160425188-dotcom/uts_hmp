@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { NavController } from '@ionic/angular';
 import { ProductService, Product } from '../services/product';
 
-
 @Component({
   selector: 'app-tab2',
   templateUrl: 'tab2.page.html',
@@ -11,21 +10,27 @@ import { ProductService, Product } from '../services/product';
 })
 export class Tab2Page implements OnInit {
 
-  // Variable penampung keyword pencarian (Two-Way Binding)
   searchQuery: string = '';
-
-  // Data master produk toko Bu Marni
   products: Product[] = [];
 
   constructor(
     private productService: ProductService,
-    private navCtrl: NavController) { }
+    private navCtrl: NavController
+  ) { }
 
   ngOnInit() {
-    // Mengambil data produk dari ProductService
+    this.loadProducts();
+  }
+
+  // Dipanggil otomatis setiap kali Tab 2 dibuka/fokus kembali
+  ionViewWillEnter() {
+    this.loadProducts();
+  }
+
+  loadProducts() {
     this.products = this.productService.getProducts();
   }
-  // Getter untuk memfilter daftar produk secara real-time berdasarkan kata kunci
+
   get filteredProducts(): Product[] {
     if (!this.searchQuery || this.searchQuery.trim() === '') {
       return this.products;
@@ -42,10 +47,13 @@ export class Tab2Page implements OnInit {
   }
 
   deleteProduct(id: number, slidingItem: any) {
-    // Menutup opsi sliding
-    slidingItem.close();
-
-    // Menghapus item dari daftar
-    this.products = this.products.filter(p => p.id !== id);
+    if (slidingItem) {
+      slidingItem.close();
+    }
+    
+    // Hapus dari service (dan localStorage)
+    this.productService.deleteProduct(id);
+    // Refresh daftar produk di UI
+    this.loadProducts();
   }
 }

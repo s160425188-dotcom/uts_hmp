@@ -15,7 +15,10 @@ export interface Product {
 })
 export class ProductService {
 
-  private products: Product[] = [
+  private storageKey = 'simobile_products';
+
+  // Data default jika localStorage masih kosong
+  private defaultProducts: Product[] = [
     { id: 1, name: 'Beras Pandan Wangi 5kg', category: 'Sembako', buyPrice: 58000, sellPrice: 65000, stock: 20 },
     { id: 2, name: 'Minyak Goreng Bimoli 1L', category: 'Minyak', buyPrice: 13000, sellPrice: 15000, stock: 12 },
     { id: 3, name: 'Gula Pasir Gulaku 1kg', category: 'Sembako', buyPrice: 12000, sellPrice: 14000, stock: 30 },
@@ -30,7 +33,31 @@ export class ProductService {
     { id: 12, name: 'Deterjen Rinso Anti Noda 770g', category: 'Kebersihan', buyPrice: 21000, sellPrice: 25000, stock: 14 }
   ];
 
-  constructor() { }
+  private products: Product[] = [];
+
+  constructor() {
+    this.loadFromStorage();
+  }
+
+  // Memuat data dari localStorage saat service pertama kali diinisialisasi
+  private loadFromStorage() {
+    const data = localStorage.getItem(this.storageKey);
+    if (data) {
+      try {
+        this.products = JSON.parse(data);
+      } catch (e) {
+        this.products = [...this.defaultProducts];
+      }
+    } else {
+      this.products = [...this.defaultProducts];
+      this.saveToStorage();
+    }
+  }
+
+  // Menyimpan data array products ke localStorage
+  private saveToStorage() {
+    localStorage.setItem(this.storageKey, JSON.stringify(this.products));
+  }
 
   // Get Semua Produk
   getProducts(): Product[] {
@@ -39,13 +66,15 @@ export class ProductService {
 
   // Get Detail Produk berdasarkan ID
   getProductById(id: number): Product | undefined {
-    return this.products.find(p => p.id === id);
+    return this.products.find(p => p.id === Number(id));
   }
 
   // Tambah Produk Baru
   addProduct(product: Omit<Product, 'id'>) {
     const newId = this.products.length > 0 ? Math.max(...this.products.map(p => p.id)) + 1 : 1;
-    this.products.push({ id: newId, ...product });
+    const newProduct: Product = { id: newId, ...product };
+    this.products.push(newProduct);
+    this.saveToStorage(); // Simpan permanen ke localStorage
   }
 
   // Update Produk Existing
@@ -53,21 +82,18 @@ export class ProductService {
     const index = this.products.findIndex(p => p.id === updatedProduct.id);
     if (index !== -1) {
       this.products[index] = updatedProduct;
+      this.saveToStorage(); // Simpan permanen ke localStorage
     }
   }
 
   // Hapus Produk
   deleteProduct(id: number) {
     this.products = this.products.filter(p => p.id !== id);
+    this.saveToStorage(); // Simpan permanen ke localStorage
   }
 
   // Menghitung Total Jenis Produk (Untuk Dashboard Tab 1)
   getTotalProductTypes(): number {
     return this.products.length;
-  }
-
-  // Mendapatkan Produk Terlaris (Untuk Dashboard Tab 1)
-  getTopProduct(): string {
-    return 'Gula Pasir Gulaku 1kg';
   }
 }
